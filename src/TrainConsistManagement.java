@@ -1,6 +1,6 @@
 import java.util.*;
 
-class TrainApp{
+public class TrainConsistManagement{
 public static void main(String args[]){
 
 System.out.println("=== Train Consist Management App ===");
