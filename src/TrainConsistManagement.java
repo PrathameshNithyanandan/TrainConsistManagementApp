@@ -1,21 +1,23 @@
-import java.util.*;
+import java.util.HashSet;
+import java.util.Set;
 
-public class TrainConsistManagement{
-public static void main(String args[]){
+public class TrainConsistManagement {
+    public static void main(String[] args) {
+        System.out.println("=== Train Consist Management App ===");
+        System.out.println("UC3: Track Unique Bogie IDs");
 
-System.out.println("=== Train Consist Management App ===");
+        Set<String> bogieIds = new HashSet<>();
 
-ArrayList<String> b=new ArrayList<>();
+        bogieIds.add("BG101");
+        bogieIds.add("BG102");
+        bogieIds.add("BG103");
+        bogieIds.add("BG101");
+        bogieIds.add("BG104");
+        bogieIds.add("BG102");
 
-b.add("Sleeper");b.add("AC Chair");b.add("First Class");
+        System.out.println("Unique bogie IDs in the train:");
+        System.out.println(bogieIds);
 
-System.out.println("after adding: "+b);
-
-b.remove("AC Chair");
-
-System.out.println("after removing: "+b);
-
-System.out.println("sleeper exists? "+b.contains("Sleeper"));
-
-}
+        System.out.println("Total unique bogies: " + bogieIds.size());
+    }
 }
