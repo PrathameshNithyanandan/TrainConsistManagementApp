@@ -18,8 +18,8 @@ public class TrainConsistManagementApp {
             this.capacity = capacity;
         }
 
-        public String getType() {
-            return type;
+        public String getName() {
+            return name;
         }
 
         public int getCapacity() {
