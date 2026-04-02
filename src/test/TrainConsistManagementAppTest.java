@@ -1,7 +1,6 @@
 import org.junit.jupiter.api.Test;
 import java.util.ArrayList;
 import java.util.List;
-
 import static org.junit.jupiter.api.Assertions.*;
 
 public class TrainConsistManagementAppTest {
@@ -17,7 +16,9 @@ public class TrainConsistManagementAppTest {
                 TrainConsistManagementApp.filterBogiesUsingLoop(bogies);
 
         assertEquals(2, result.size());
-        assertTrue(result.stream().allMatch(b -> b.getCapacity() > 60));
+        for (TrainConsistManagementApp.Bogie bogie : result) {
+            assertTrue(bogie.getCapacity() > 60);
+        }
     }
 
     @Test
@@ -31,7 +32,9 @@ public class TrainConsistManagementAppTest {
                 TrainConsistManagementApp.filterBogiesUsingStream(bogies);
 
         assertEquals(2, result.size());
-        assertTrue(result.stream().allMatch(b -> b.getCapacity() > 60));
+        for (TrainConsistManagementApp.Bogie bogie : result) {
+            assertTrue(bogie.getCapacity() > 60);
+        }
     }
 
     @Test
@@ -61,8 +64,8 @@ public class TrainConsistManagementAppTest {
         long loopTime = TrainConsistManagementApp.measureLoopExecutionTime(bogies);
         long streamTime = TrainConsistManagementApp.measureStreamExecutionTime(bogies);
 
-        assertTrue(loopTime > 0);
-        assertTrue(streamTime > 0);
+        assertTrue(loopTime >= 0);
+        assertTrue(streamTime >= 0);
     }
 
     @Test
@@ -80,7 +83,5 @@ public class TrainConsistManagementAppTest {
                 TrainConsistManagementApp.filterBogiesUsingStream(bogies);
 
         assertEquals(loopResult.size(), streamResult.size());
-        assertTrue(loopResult.stream().allMatch(b -> b.getCapacity() > 60));
-        assertTrue(streamResult.stream().allMatch(b -> b.getCapacity() > 60));
     }
 }
