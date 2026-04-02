@@ -1,21 +1,13 @@
 public class TrainConsistManagementApp {
 
-public class TrainConsistManagementApp {
+    public static boolean searchBogieId(String[] bogieIds, String searchKey) {
+        if (bogieIds == null || bogieIds.length == 0) {
+            throw new IllegalStateException("Cannot perform search: train has no bogies.");
+        }
 
-    public static boolean binarySearchBogieId(String[] bogieIds, String searchKey) {
-        int low = 0;
-        int high = bogieIds.length - 1;
-
-        while (low <= high) {
-            int mid = (low + high) / 2;
-            int comparison = searchKey.compareTo(bogieIds[mid]);
-
-            if (comparison == 0) {
+        for (String bogieId : bogieIds) {
+            if (bogieId.equals(searchKey)) {
                 return true;
-            } else if (comparison < 0) {
-                high = mid - 1;
-            } else {
-                low = mid + 1;
             }
         }
 
@@ -23,15 +15,13 @@ public class TrainConsistManagementApp {
     }
 
     public static void main(String[] args) {
-        String[] bogieIds = {"BG101", "BG205", "BG309", "BG412", "BG550"};
-        String searchKey = "BG309";
+        String[] bogieIds = {};
 
-        boolean found = binarySearchBogieId(bogieIds, searchKey);
-
-        if (found) {
-            System.out.println("Bogie ID " + searchKey + " found in the sorted train consist.");
-        } else {
-            System.out.println("Bogie ID " + searchKey + " not found in the sorted train consist.");
+        try {
+            boolean found = searchBogieId(bogieIds, "BG101");
+            System.out.println("Search Result: " + found);
+        } catch (IllegalStateException e) {
+            System.out.println(e.getMessage());
         }
     }
 }
