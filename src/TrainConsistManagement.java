@@ -1,31 +1,46 @@
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Scanner;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
-class Bogie {
-    String name;
-    int capacity;
+public class TrainConsistManagementApp {
 
-    Bogie(String name, int capacity) {
-        this.name = name;
-        this.capacity = capacity;
+    public static boolean validateTrainId(String trainId) {
+        String trainIdRegex = "TRN-\\d{4}";
+        Pattern pattern = Pattern.compile(trainIdRegex);
+        Matcher matcher = pattern.matcher(trainId);
+        return matcher.matches();
     }
-}
 
-public class TrainConsistManagement {
+    public static boolean validateCargoCode(String cargoCode) {
+        String cargoCodeRegex = "PET-[A-Z]{2}";
+        Pattern pattern = Pattern.compile(cargoCodeRegex);
+        Matcher matcher = pattern.matcher(cargoCode);
+        return matcher.matches();
+    }
+
     public static void main(String[] args) {
-        System.out.println("=== Train Consist Management App ===");
-        System.out.println("UC10: Count Total Seats in Train");
+        Scanner scanner = new Scanner(System.in);
 
-        List<Bogie> bogies = new ArrayList<>();
+        System.out.println("=== UC11: Validate Train ID & Cargo Codes ===");
 
-        bogies.add(new Bogie("Sleeper", 72));
-        bogies.add(new Bogie("AC Chair", 56));
-        bogies.add(new Bogie("First Class", 24));
+        System.out.print("Enter Train ID: ");
+        String trainId = scanner.nextLine();
 
-        int totalSeats = bogies.stream()
-                .map(b -> b.capacity)
-                .reduce(0, Integer::sum);
+        System.out.print("Enter Cargo Code: ");
+        String cargoCode = scanner.nextLine();
 
-        System.out.println("Total seating capacity: " + totalSeats);
+        if (validateTrainId(trainId)) {
+            System.out.println("Train ID is valid.");
+        } else {
+            System.out.println("Train ID is invalid.");
+        }
+
+        if (validateCargoCode(cargoCode)) {
+            System.out.println("Cargo Code is valid.");
+        } else {
+            System.out.println("Cargo Code is invalid.");
+        }
+
+        scanner.close();
     }
 }
