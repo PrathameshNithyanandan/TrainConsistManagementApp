@@ -1,52 +1,41 @@
 import org.junit.jupiter.api.Test;
-import java.util.ArrayList;
-import java.util.List;
-
 import static org.junit.jupiter.api.Assertions.*;
 
 public class TrainConsistManagementAppTest {
 
     @Test
-    void testSafety_AllBogiesValid() {
-        List<TrainConsistManagementApp.GoodsBogie> bogies = new ArrayList<>();
-        bogies.add(new TrainConsistManagementApp.GoodsBogie("Cylindrical", "Petroleum"));
-        bogies.add(new TrainConsistManagementApp.GoodsBogie("Open", "Coal"));
-        bogies.add(new TrainConsistManagementApp.GoodsBogie("Box", "Grain"));
-
-        assertTrue(TrainConsistManagementApp.isSafetyCompliant(bogies));
+    void testBinarySearch_BogieFound() {
+        String[] bogieIds = {"BG101", "BG205", "BG309", "BG412", "BG550"};
+        assertTrue(TrainConsistManagementApp.binarySearchBogieId(bogieIds, "BG309"));
     }
 
     @Test
-    void testSafety_CylindricalWithInvalidCargo() {
-        List<TrainConsistManagementApp.GoodsBogie> bogies = new ArrayList<>();
-        bogies.add(new TrainConsistManagementApp.GoodsBogie("Cylindrical", "Coal"));
-
-        assertFalse(TrainConsistManagementApp.isSafetyCompliant(bogies));
+    void testBinarySearch_BogieNotFound() {
+        String[] bogieIds = {"BG101", "BG205", "BG309", "BG412", "BG550"};
+        assertFalse(TrainConsistManagementApp.binarySearchBogieId(bogieIds, "BG999"));
     }
 
     @Test
-    void testSafety_NonCylindricalBogiesAllowed() {
-        List<TrainConsistManagementApp.GoodsBogie> bogies = new ArrayList<>();
-        bogies.add(new TrainConsistManagementApp.GoodsBogie("Open", "Coal"));
-        bogies.add(new TrainConsistManagementApp.GoodsBogie("Box", "Grain"));
-
-        assertTrue(TrainConsistManagementApp.isSafetyCompliant(bogies));
+    void testBinarySearch_FirstElementMatch() {
+        String[] bogieIds = {"BG101", "BG205", "BG309", "BG412", "BG550"};
+        assertTrue(TrainConsistManagementApp.binarySearchBogieId(bogieIds, "BG101"));
     }
 
     @Test
-    void testSafety_MixedBogiesWithViolation() {
-        List<TrainConsistManagementApp.GoodsBogie> bogies = new ArrayList<>();
-        bogies.add(new TrainConsistManagementApp.GoodsBogie("Cylindrical", "Petroleum"));
-        bogies.add(new TrainConsistManagementApp.GoodsBogie("Box", "Cement"));
-        bogies.add(new TrainConsistManagementApp.GoodsBogie("Cylindrical", "Coal"));
-
-        assertFalse(TrainConsistManagementApp.isSafetyCompliant(bogies));
+    void testBinarySearch_LastElementMatch() {
+        String[] bogieIds = {"BG101", "BG205", "BG309", "BG412", "BG550"};
+        assertTrue(TrainConsistManagementApp.binarySearchBogieId(bogieIds, "BG550"));
     }
 
     @Test
-    void testSafety_EmptyBogieList() {
-        List<TrainConsistManagementApp.GoodsBogie> bogies = new ArrayList<>();
+    void testBinarySearch_SingleElementArray() {
+        String[] bogieIds = {"BG101"};
+        assertTrue(TrainConsistManagementApp.binarySearchBogieId(bogieIds, "BG101"));
+    }
 
-        assertTrue(TrainConsistManagementApp.isSafetyCompliant(bogies));
+    @Test
+    void testBinarySearch_EmptyArray() {
+        String[] bogieIds = {};
+        assertFalse(TrainConsistManagementApp.binarySearchBogieId(bogieIds, "BG101"));
     }
 }
