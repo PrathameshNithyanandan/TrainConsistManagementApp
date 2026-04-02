@@ -1,44 +1,59 @@
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Scanner;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 public class TrainConsistManagementApp {
 
-    public static boolean validateTrainId(String trainId) {
-        String trainIdRegex = "TRN-\\d{4}";
-        Pattern pattern = Pattern.compile(trainIdRegex);
-        Matcher matcher = pattern.matcher(trainId);
-        return matcher.matches();
+    static class GoodsBogie {
+        private String type;
+        private String cargo;
+
+        public GoodsBogie(String type, String cargo) {
+            this.type = type;
+            this.cargo = cargo;
+        }
+
+        public String getType() {
+            return type;
+        }
+
+        public String getCargo() {
+            return cargo;
+        }
     }
 
-    public static boolean validateCargoCode(String cargoCode) {
-        String cargoCodeRegex = "PET-[A-Z]{2}";
-        Pattern pattern = Pattern.compile(cargoCodeRegex);
-        Matcher matcher = pattern.matcher(cargoCode);
-        return matcher.matches();
+    public static boolean isSafetyCompliant(List<GoodsBogie> goodsBogies) {
+        return goodsBogies.stream()
+                .allMatch(bogie ->
+                        !bogie.getType().equalsIgnoreCase("Cylindrical")
+                                || bogie.getCargo().equalsIgnoreCase("Petroleum"));
     }
 
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
+        List<GoodsBogie> goodsBogies = new ArrayList<>();
 
-        System.out.println("=== UC11: Validate Train ID & Cargo Codes ===");
+        System.out.println("=== UC12: Safety Compliance Check for Goods Bogies ===");
+        System.out.print("Enter number of goods bogies: ");
+        int n = Integer.parseInt(scanner.nextLine());
 
-        System.out.print("Enter Train ID: ");
-        String trainId = scanner.nextLine();
+        for (int i = 1; i <= n; i++) {
+            System.out.println("Enter details for bogie " + i + ":");
+            System.out.print("Type: ");
+            String type = scanner.nextLine();
 
-        System.out.print("Enter Cargo Code: ");
-        String cargoCode = scanner.nextLine();
+            System.out.print("Cargo: ");
+            String cargo = scanner.nextLine();
 
-        if (validateTrainId(trainId)) {
-            System.out.println("Train ID is valid.");
-        } else {
-            System.out.println("Train ID is invalid.");
+            goodsBogies.add(new GoodsBogie(type, cargo));
         }
 
-        if (validateCargoCode(cargoCode)) {
-            System.out.println("Cargo Code is valid.");
+        boolean safe = isSafetyCompliant(goodsBogies);
+
+        if (safe) {
+            System.out.println("Train is safety compliant.");
         } else {
-            System.out.println("Cargo Code is invalid.");
+            System.out.println("Train is NOT safety compliant.");
         }
 
         scanner.close();
