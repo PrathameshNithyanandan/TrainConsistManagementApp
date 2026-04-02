@@ -1,57 +1,75 @@
-public class TrainConsistManagementApp {
+import org.junit.jupiter.api.Test;
 
-    static class CargoSafetyException extends RuntimeException {
-        public CargoSafetyException(String message) {
-            super(message);
-        }
+import java.io.ByteArrayOutputStream;
+import java.io.PrintStream;
+
+import static org.junit.jupiter.api.Assertions.*;
+
+public class TrainConsistManagementAppTest {
+
+    @Test
+    void testCargo_SafeAssignment() {
+        TrainConsistManagementApp.GoodsBogie bogie =
+                new TrainConsistManagementApp.GoodsBogie("Cylindrical");
+
+        boolean result = bogie.assignCargo("Petroleum");
+
+        assertTrue(result);
+        assertEquals("Petroleum", bogie.getCargo());
     }
 
-    static class GoodsBogie {
-        private String shape;
-        private String cargo;
+    @Test
+    void testCargo_UnsafeAssignmentHandled() {
+        TrainConsistManagementApp.GoodsBogie bogie =
+                new TrainConsistManagementApp.GoodsBogie("Rectangular");
 
-        public GoodsBogie(String shape) {
-            this.shape = shape;
-            this.cargo = null;
-        }
+        boolean result = bogie.assignCargo("Petroleum");
 
-        public String getShape() {
-            return shape;
-        }
-
-        public String getCargo() {
-            return cargo;
-        }
-
-        public boolean assignCargo(String cargo) {
-            boolean assigned = false;
-
-            try {
-                if (shape.equalsIgnoreCase("Rectangular") && cargo.equalsIgnoreCase("Petroleum")) {
-                    throw new CargoSafetyException("Unsafe cargo assignment: Petroleum cannot be assigned to a Rectangular bogie");
-                }
-
-                this.cargo = cargo;
-                System.out.println("Cargo assigned successfully: " + cargo);
-                assigned = true;
-
-            } catch (CargoSafetyException e) {
-                System.out.println("Exception caught: " + e.getMessage());
-            } finally {
-                System.out.println("Cargo assignment attempt completed.");
-            }
-
-            return assigned;
-        }
+        assertFalse(result);
+        assertNull(bogie.getCargo());
     }
 
-    public static void main(String[] args) {
-        GoodsBogie bogie1 = new GoodsBogie("Cylindrical");
-        GoodsBogie bogie2 = new GoodsBogie("Rectangular");
+    @Test
+    void testCargo_CargoNotAssignedAfterFailure() {
+        TrainConsistManagementApp.GoodsBogie bogie =
+                new TrainConsistManagementApp.GoodsBogie("Rectangular");
 
-        bogie1.assignCargo("Petroleum");
-        bogie2.assignCargo("Petroleum");
+        bogie.assignCargo("Petroleum");
 
-        System.out.println("Program continues safely.");
+        assertNull(bogie.getCargo());
+    }
+
+    @Test
+    void testCargo_ProgramContinuesAfterException() {
+        TrainConsistManagementApp.GoodsBogie bogie1 =
+                new TrainConsistManagementApp.GoodsBogie("Rectangular");
+        TrainConsistManagementApp.GoodsBogie bogie2 =
+                new TrainConsistManagementApp.GoodsBogie("Cylindrical");
+
+        boolean firstResult = bogie1.assignCargo("Petroleum");
+        boolean secondResult = bogie2.assignCargo("Coal");
+
+        assertFalse(firstResult);
+        assertTrue(secondResult);
+        assertEquals("Coal", bogie2.getCargo());
+    }
+
+    @Test
+    void testCargo_FinallyBlockExecution() {
+        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        PrintStream originalOut = System.out;
+        System.setOut(new PrintStream(outputStream));
+
+        try {
+            TrainConsistManagementApp.GoodsBogie bogie =
+                    new TrainConsistManagementApp.GoodsBogie("Rectangular");
+
+            bogie.assignCargo("Petroleum");
+
+            String output = outputStream.toString();
+            assertTrue(output.contains("Cargo assignment attempt completed."));
+        } finally {
+            System.setOut(originalOut);
+        }
     }
 }
