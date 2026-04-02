@@ -1,19 +1,24 @@
-import java.util.Arrays;
-
 public class TrainConsistManagementApp {
 
-    public static String[] sortBogieNames(String[] bogieNames) {
-        Arrays.sort(bogieNames);
-        return bogieNames;
+    public static boolean searchBogieId(String[] bogieIds, String searchKey) {
+        for (String bogieId : bogieIds) {
+            if (bogieId.equals(searchKey)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     public static void main(String[] args) {
-        String[] bogieNames = {"Sleeper", "AC Chair", "First Class", "General", "Luxury"};
+        String[] bogieIds = {"BG101", "BG205", "BG309", "BG412", "BG550"};
+        String searchKey = "BG309";
 
-        System.out.println("Before Sorting: " + Arrays.toString(bogieNames));
+        boolean found = searchBogieId(bogieIds, searchKey);
 
-        sortBogieNames(bogieNames);
-
-        System.out.println("After Sorting: " + Arrays.toString(bogieNames));
+        if (found) {
+            System.out.println("Bogie ID " + searchKey + " found in the train consist.");
+        } else {
+            System.out.println("Bogie ID " + searchKey + " not found in the train consist.");
+        }
     }
 }
