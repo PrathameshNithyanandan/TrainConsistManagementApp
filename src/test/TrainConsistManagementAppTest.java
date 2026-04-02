@@ -1,75 +1,56 @@
 import org.junit.jupiter.api.Test;
-
-import java.io.ByteArrayOutputStream;
-import java.io.PrintStream;
-
 import static org.junit.jupiter.api.Assertions.*;
+import java.util.Arrays;
 
 public class TrainConsistManagementAppTest {
 
     @Test
-    void testCargo_SafeAssignment() {
-        TrainConsistManagementApp.GoodsBogie bogie =
-                new TrainConsistManagementApp.GoodsBogie("Cylindrical");
+    void testSort_BasicAlphabeticalSorting() {
+        String[] bogieNames = {"Sleeper", "AC Chair", "First Class", "General", "Luxury"};
+        String[] expected = {"AC Chair", "First Class", "General", "Luxury", "Sleeper"};
 
-        boolean result = bogie.assignCargo("Petroleum");
+        String[] result = TrainConsistManagementApp.sortBogieNames(bogieNames);
 
-        assertTrue(result);
-        assertEquals("Petroleum", bogie.getCargo());
+        assertArrayEquals(expected, result);
     }
 
     @Test
-    void testCargo_UnsafeAssignmentHandled() {
-        TrainConsistManagementApp.GoodsBogie bogie =
-                new TrainConsistManagementApp.GoodsBogie("Rectangular");
+    void testSort_UnsortedInput() {
+        String[] bogieNames = {"Luxury", "General", "Sleeper", "AC Chair"};
+        String[] expected = {"AC Chair", "General", "Luxury", "Sleeper"};
 
-        boolean result = bogie.assignCargo("Petroleum");
+        String[] result = TrainConsistManagementApp.sortBogieNames(bogieNames);
 
-        assertFalse(result);
-        assertNull(bogie.getCargo());
+        assertArrayEquals(expected, result);
     }
 
     @Test
-    void testCargo_CargoNotAssignedAfterFailure() {
-        TrainConsistManagementApp.GoodsBogie bogie =
-                new TrainConsistManagementApp.GoodsBogie("Rectangular");
+    void testSort_AlreadySortedArray() {
+        String[] bogieNames = {"AC Chair", "First Class", "General"};
+        String[] expected = {"AC Chair", "First Class", "General"};
 
-        bogie.assignCargo("Petroleum");
+        String[] result = TrainConsistManagementApp.sortBogieNames(bogieNames);
 
-        assertNull(bogie.getCargo());
+        assertArrayEquals(expected, result);
     }
 
     @Test
-    void testCargo_ProgramContinuesAfterException() {
-        TrainConsistManagementApp.GoodsBogie bogie1 =
-                new TrainConsistManagementApp.GoodsBogie("Rectangular");
-        TrainConsistManagementApp.GoodsBogie bogie2 =
-                new TrainConsistManagementApp.GoodsBogie("Cylindrical");
+    void testSort_DuplicateBogieNames() {
+        String[] bogieNames = {"Sleeper", "AC Chair", "Sleeper", "General"};
+        String[] expected = {"AC Chair", "General", "Sleeper", "Sleeper"};
 
-        boolean firstResult = bogie1.assignCargo("Petroleum");
-        boolean secondResult = bogie2.assignCargo("Coal");
+        String[] result = TrainConsistManagementApp.sortBogieNames(bogieNames);
 
-        assertFalse(firstResult);
-        assertTrue(secondResult);
-        assertEquals("Coal", bogie2.getCargo());
+        assertArrayEquals(expected, result);
     }
 
     @Test
-    void testCargo_FinallyBlockExecution() {
-        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-        PrintStream originalOut = System.out;
-        System.setOut(new PrintStream(outputStream));
+    void testSort_SingleElementArray() {
+        String[] bogieNames = {"Sleeper"};
+        String[] expected = {"Sleeper"};
 
-        try {
-            TrainConsistManagementApp.GoodsBogie bogie =
-                    new TrainConsistManagementApp.GoodsBogie("Rectangular");
+        String[] result = TrainConsistManagementApp.sortBogieNames(bogieNames);
 
-            bogie.assignCargo("Petroleum");
-
-            String output = outputStream.toString();
-            assertTrue(output.contains("Cargo assignment attempt completed."));
-        } finally {
-            System.setOut(originalOut);
-        }
+        assertArrayEquals(expected, result);
     }
 }
