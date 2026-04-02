@@ -1,87 +1,57 @@
-import org.junit.jupiter.api.Test;
-import java.util.ArrayList;
-import java.util.List;
-import static org.junit.jupiter.api.Assertions.*;
+public class TrainConsistManagementApp {
 
-public class TrainConsistManagementAppTest {
-
-    @Test
-    void testLoopFilteringLogic() {
-        List<TrainConsistManagementApp.Bogie> bogies = new ArrayList<>();
-        bogies.add(new TrainConsistManagementApp.Bogie("Sleeper", 72));
-        bogies.add(new TrainConsistManagementApp.Bogie("AC Chair", 56));
-        bogies.add(new TrainConsistManagementApp.Bogie("First Class", 64));
-
-        List<TrainConsistManagementApp.Bogie> result =
-                TrainConsistManagementApp.filterBogiesUsingLoop(bogies);
-
-        assertEquals(2, result.size());
-        for (TrainConsistManagementApp.Bogie bogie : result) {
-            assertTrue(bogie.getCapacity() > 60);
+    static class CargoSafetyException extends RuntimeException {
+        public CargoSafetyException(String message) {
+            super(message);
         }
     }
 
-    @Test
-    void testStreamFilteringLogic() {
-        List<TrainConsistManagementApp.Bogie> bogies = new ArrayList<>();
-        bogies.add(new TrainConsistManagementApp.Bogie("Sleeper", 72));
-        bogies.add(new TrainConsistManagementApp.Bogie("AC Chair", 56));
-        bogies.add(new TrainConsistManagementApp.Bogie("First Class", 64));
+    static class GoodsBogie {
+        private String shape;
+        private String cargo;
 
-        List<TrainConsistManagementApp.Bogie> result =
-                TrainConsistManagementApp.filterBogiesUsingStream(bogies);
+        public GoodsBogie(String shape) {
+            this.shape = shape;
+            this.cargo = null;
+        }
 
-        assertEquals(2, result.size());
-        for (TrainConsistManagementApp.Bogie bogie : result) {
-            assertTrue(bogie.getCapacity() > 60);
+        public String getShape() {
+            return shape;
+        }
+
+        public String getCargo() {
+            return cargo;
+        }
+
+        public boolean assignCargo(String cargo) {
+            boolean assigned = false;
+
+            try {
+                if (shape.equalsIgnoreCase("Rectangular") && cargo.equalsIgnoreCase("Petroleum")) {
+                    throw new CargoSafetyException("Unsafe cargo assignment: Petroleum cannot be assigned to a Rectangular bogie");
+                }
+
+                this.cargo = cargo;
+                System.out.println("Cargo assigned successfully: " + cargo);
+                assigned = true;
+
+            } catch (CargoSafetyException e) {
+                System.out.println("Exception caught: " + e.getMessage());
+            } finally {
+                System.out.println("Cargo assignment attempt completed.");
+            }
+
+            return assigned;
         }
     }
 
-    @Test
-    void testLoopAndStreamResultsMatch() {
-        List<TrainConsistManagementApp.Bogie> bogies = new ArrayList<>();
-        bogies.add(new TrainConsistManagementApp.Bogie("Sleeper", 72));
-        bogies.add(new TrainConsistManagementApp.Bogie("AC Chair", 56));
-        bogies.add(new TrainConsistManagementApp.Bogie("First Class", 64));
-        bogies.add(new TrainConsistManagementApp.Bogie("General", 58));
+    public static void main(String[] args) {
+        GoodsBogie bogie1 = new GoodsBogie("Cylindrical");
+        GoodsBogie bogie2 = new GoodsBogie("Rectangular");
 
-        List<TrainConsistManagementApp.Bogie> loopResult =
-                TrainConsistManagementApp.filterBogiesUsingLoop(bogies);
+        bogie1.assignCargo("Petroleum");
+        bogie2.assignCargo("Petroleum");
 
-        List<TrainConsistManagementApp.Bogie> streamResult =
-                TrainConsistManagementApp.filterBogiesUsingStream(bogies);
-
-        assertEquals(loopResult.size(), streamResult.size());
-    }
-
-    @Test
-    void testExecutionTimeMeasurement() {
-        List<TrainConsistManagementApp.Bogie> bogies = new ArrayList<>();
-        bogies.add(new TrainConsistManagementApp.Bogie("Sleeper", 72));
-        bogies.add(new TrainConsistManagementApp.Bogie("AC Chair", 56));
-        bogies.add(new TrainConsistManagementApp.Bogie("First Class", 64));
-
-        long loopTime = TrainConsistManagementApp.measureLoopExecutionTime(bogies);
-        long streamTime = TrainConsistManagementApp.measureStreamExecutionTime(bogies);
-
-        assertTrue(loopTime >= 0);
-        assertTrue(streamTime >= 0);
-    }
-
-    @Test
-    void testLargeDatasetProcessing() {
-        List<TrainConsistManagementApp.Bogie> bogies = new ArrayList<>();
-
-        for (int i = 1; i <= 1000; i++) {
-            bogies.add(new TrainConsistManagementApp.Bogie("Bogie" + i, i % 100));
-        }
-
-        List<TrainConsistManagementApp.Bogie> loopResult =
-                TrainConsistManagementApp.filterBogiesUsingLoop(bogies);
-
-        List<TrainConsistManagementApp.Bogie> streamResult =
-                TrainConsistManagementApp.filterBogiesUsingStream(bogies);
-
-        assertEquals(loopResult.size(), streamResult.size());
+        System.out.println("Program continues safely.");
     }
 }
