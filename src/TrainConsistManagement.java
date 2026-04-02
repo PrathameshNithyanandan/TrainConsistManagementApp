@@ -1,61 +1,87 @@
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Scanner;
+import java.util.stream.Collectors;
 
 public class TrainConsistManagementApp {
 
-    static class GoodsBogie {
-        private String type;
-        private String cargo;
+    static class Bogie {
+        private String name;
+        private int capacity;
 
-        public GoodsBogie(String type, String cargo) {
-            this.type = type;
-            this.cargo = cargo;
+        public Bogie(String name, int capacity) {
+            this.name = name;
+            this.capacity = capacity;
         }
 
-        public String getType() {
-            return type;
+        public String getName() {
+            return name;
         }
 
-        public String getCargo() {
-            return cargo;
+        public int getCapacity() {
+            return capacity;
         }
     }
 
-    public static boolean isSafetyCompliant(List<GoodsBogie> goodsBogies) {
-        return goodsBogies.stream()
-                .allMatch(bogie ->
-                        !bogie.getType().equalsIgnoreCase("Cylindrical")
-                                || bogie.getCargo().equalsIgnoreCase("Petroleum"));
+    public static List<Bogie> filterBogiesUsingLoop(List<Bogie> bogies) {
+        List<Bogie> filteredBogies = new ArrayList<>();
+        for (Bogie bogie : bogies) {
+            if (bogie.getCapacity() > 60) {
+                filteredBogies.add(bogie);
+            }
+        }
+        return filteredBogies;
+    }
+
+    public static List<Bogie> filterBogiesUsingStream(List<Bogie> bogies) {
+        return bogies.stream()
+                .filter(bogie -> bogie.getCapacity() > 60)
+                .collect(Collectors.toList());
+    }
+
+    public static long measureLoopExecutionTime(List<Bogie> bogies) {
+        long startTime = System.nanoTime();
+        filterBogiesUsingLoop(bogies);
+        long endTime = System.nanoTime();
+        long elapsedTime = endTime - startTime;
+        return elapsedTime > 0 ? elapsedTime : 1;
+    }
+
+    public static long measureStreamExecutionTime(List<Bogie> bogies) {
+        long startTime = System.nanoTime();
+        filterBogiesUsingStream(bogies);
+        long endTime = System.nanoTime();
+        long elapsedTime = endTime - startTime;
+        return elapsedTime > 0 ? elapsedTime : 1;
     }
 
     public static void main(String[] args) {
-        Scanner scanner = new Scanner(System.in);
-        List<GoodsBogie> goodsBogies = new ArrayList<>();
+        List<Bogie> bogies = new ArrayList<>();
+        bogies.add(new Bogie("Sleeper", 72));
+        bogies.add(new Bogie("AC Chair", 56));
+        bogies.add(new Bogie("First Class", 64));
+        bogies.add(new Bogie("General", 58));
+        bogies.add(new Bogie("Luxury", 80));
 
-        System.out.println("=== UC12: Safety Compliance Check for Goods Bogies ===");
-        System.out.print("Enter number of goods bogies: ");
-        int n = Integer.parseInt(scanner.nextLine());
+        long loopTime = measureLoopExecutionTime(bogies);
+        long streamTime = measureStreamExecutionTime(bogies);
 
-        for (int i = 1; i <= n; i++) {
-            System.out.println("Enter details for bogie " + i + ":");
-            System.out.print("Type: ");
-            String type = scanner.nextLine();
+        List<Bogie> loopResult = filterBogiesUsingLoop(bogies);
+        List<Bogie> streamResult = filterBogiesUsingStream(bogies);
 
-            System.out.print("Cargo: ");
-            String cargo = scanner.nextLine();
+        System.out.println("=== UC13: Performance Comparison (Loops vs Streams) ===");
 
-            goodsBogies.add(new GoodsBogie(type, cargo));
+        System.out.println("\nLoop-based filtered bogies:");
+        for (Bogie bogie : loopResult) {
+            System.out.println(bogie.getName() + " - " + bogie.getCapacity());
         }
 
-        boolean safe = isSafetyCompliant(goodsBogies);
+        System.out.println("Loop Execution Time: " + loopTime + " ns");
 
-        if (safe) {
-            System.out.println("Train is safety compliant.");
-        } else {
-            System.out.println("Train is NOT safety compliant.");
+        System.out.println("\nStream-based filtered bogies:");
+        for (Bogie bogie : streamResult) {
+            System.out.println(bogie.getName() + " - " + bogie.getCapacity());
         }
 
-        scanner.close();
+        System.out.println("Stream Execution Time: " + streamTime + " ns");
     }
 }
