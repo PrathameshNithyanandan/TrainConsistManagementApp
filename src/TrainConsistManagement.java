@@ -8,6 +8,10 @@ public class TrainConsistManagementApp {
         for (String bogieId : bogieIds) {
             if (bogieId.equals(searchKey)) {
                 return true;
+            } else if (comparison < 0) {
+                high = mid - 1;
+            } else {
+                low = mid + 1;
             }
         }
 
